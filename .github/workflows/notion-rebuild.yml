@@ -1,0 +1,15 @@
+name: Notion Rebuild
+
+on:
+  schedule:
+    # 30분마다 실행 (UTC 기준, 한국시간과 무관하게 계속 돌아감)
+    - cron: "*/30 * * * *"
+  workflow_dispatch: {}
+    # GitHub Actions 탭에서 수동으로도 실행 가능
+
+jobs:
+  trigger-netlify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Netlify 빌드 훅 호출
+        run: curl -X POST -fsS "${{ secrets.NETLIFY_BUILD_HOOK }}"
