@@ -1,0 +1,8 @@
+# /trpg, /log 경로는 아이디+비밀번호가 있어야 접근 가능
+# 메인(/), /gallery는 이 파일에 규칙이 없으므로 그대로 공개 상태 유지됨
+
+/trpg/*
+  Basic-Auth: mimesis:0108
+
+/log/*
+  Basic-Auth: mimesis:master0108
