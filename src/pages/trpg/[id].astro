@@ -1,0 +1,28 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getPosts, getPageBlocks } from "../../lib/notion.js";
+import { renderBlocks } from "../../lib/renderBlocks.js";
+
+export async function getStaticPaths() {
+  const posts = await getPosts("TRPG");
+  return posts.map((post) => ({
+    params: { id: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const blocks = await getPageBlocks(post.id);
+const html = renderBlocks(blocks);
+---
+<Layout title={post.title}>
+  <article class="post-full">
+    <header class="post-full-header">
+      <h1 class="post-full-title">{post.title}</h1>
+      <div class="post-meta">
+        <span class="post-date">{post.date}</span>
+      </div>
+    </header>
+    <div class="post-full-body" set:html={html} />
+  </article>
+</Layout>

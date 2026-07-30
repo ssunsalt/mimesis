@@ -1,0 +1,34 @@
+---
+import "../styles/global.css";
+
+const { title = "Mimesis" } = Astro.props;
+---
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title}</title>
+</head>
+<body>
+  <div class="wrap">
+    <header class="site-header">
+      <a href="/" class="site-logo-link">
+        <img src="/images/banner.png" alt="logo" class="site-logo" />
+      </a>
+    </header>
+
+    <nav class="category-list">
+      <a href="/trpg">TRPG</a>
+      <a href="/log">LOG</a>
+      <a href="/gallery">GALLERY</a>
+    </nav>
+
+    <div class="layout">
+      <main class="content">
+        <slot />
+      </main>
+    </div>
+  </div>
+</body>
+</html>

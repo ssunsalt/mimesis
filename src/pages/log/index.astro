@@ -1,0 +1,21 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getPosts } from "../../lib/notion.js";
+
+const posts = await getPosts("LOG");
+---
+<Layout title="LOG">
+  {posts.length === 0 && <p class="empty-msg">등록된 글이 없습니다.</p>}
+  <ul class="post-list">
+    {posts.map((post) => (
+      <li class="post-item">
+        <a href={`/log/${post.id}`} class="post-link">
+          <span class="post-title">{post.title}</span>
+          <span class="post-meta">
+            <span class="post-date">{post.date}</span>
+          </span>
+        </a>
+      </li>
+    ))}
+  </ul>
+</Layout>

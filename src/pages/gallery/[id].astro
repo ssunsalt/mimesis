@@ -1,0 +1,22 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getPosts, getPageBlocks } from "../../lib/notion.js";
+import { renderBlocks } from "../../lib/renderBlocks.js";
+
+export async function getStaticPaths() {
+  const posts = await getPosts("GALLERY");
+  return posts.map((post) => ({
+    params: { id: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const blocks = await getPageBlocks(post.id);
+const html = renderBlocks(blocks);
+---
+<Layout title={post.title}>
+  <article class="post-full cat-GALLERY">
+    <div class="post-full-body" set:html={html} />
+  </article>
+</Layout>
