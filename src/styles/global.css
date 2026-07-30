@@ -139,3 +139,8 @@ button{ font-family: inherit; }
     flex-direction: column;
   }
 }
+
+/* 마스토돈 백업 도구가 만든 말풍선 안 문단(<p data-ke-size>)은 기본 여백 제거 */
+.post-full-body p[data-ke-size] {
+  margin: 0;
+}
