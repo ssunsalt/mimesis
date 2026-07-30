@@ -118,3 +118,24 @@ button{ font-family: inherit; }
     gap: 14px;
   }
 }
+/* Notion 컬럼 레이아웃 (나란히 배치된 블록들) */
+.notion-column-list{
+  display: flex;
+  gap: 16px;
+  margin: 16px 0;
+}
+.notion-column{
+  flex: 1;
+  min-width: 0;
+}
+.notion-column img{
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+@media (max-width: 640px){
+  .notion-column-list{
+    flex-direction: column;
+  }
+}

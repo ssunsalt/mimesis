@@ -1,8 +1,11 @@
-export function renderBlocks(blocks) {
-  return blocks.map(renderBlock).join("\n");
+import { getPageBlocks } from "./notion.js";
+
+export async function renderBlocks(blocks) {
+  const parts = await Promise.all(blocks.map(renderBlock));
+  return parts.join("\n");
 }
 
-function renderBlock(block) {
+async function renderBlock(block) {
   switch (block.type) {
     case "paragraph":
       return `<p>${renderRichText(block.paragraph.rich_text)}</p>`;
@@ -33,6 +36,26 @@ function renderBlock(block) {
 
     case "divider":
       return `<hr />`;
+
+    // Notion에서 블록을 나란히 배치하면 생기는 "컬럼 그룹"
+    case "column_list": {
+      const columns = await getPageBlocks(block.id);
+      const columnsHtml = await Promise.all(
+        columns.map(async (col) => {
+          const children = await getPageBlocks(col.id);
+          const inner = await renderBlocks(children);
+          return `<div class="notion-column">${inner}</div>`;
+        })
+      );
+      return `<div class="notion-column-list">${columnsHtml.join("")}</div>`;
+    }
+
+    // column_list 없이 단독으로 올 일은 없지만 방어적으로 처리
+    case "column": {
+      const children = await getPageBlocks(block.id);
+      const inner = await renderBlocks(children);
+      return `<div class="notion-column">${inner}</div>`;
+    }
 
     default:
       return "";

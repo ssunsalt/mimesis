@@ -27,10 +27,11 @@ export async function getPosts(category) {
   }));
 }
 
-// 특정 글의 본문 블록 가져오기
-export async function getPageBlocks(pageId) {
+// 특정 블록(페이지 포함)의 자식 블록 목록 가져오기
+// 페이지 본문뿐 아니라, 컬럼(column) 같은 중첩 구조의 자식을 가져올 때도 재사용됨
+export async function getPageBlocks(blockId) {
   const response = await notion.blocks.children.list({
-    block_id: pageId,
+    block_id: blockId,
     page_size: 100,
   });
   return response.results;

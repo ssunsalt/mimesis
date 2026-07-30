@@ -13,7 +13,7 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const blocks = await getPageBlocks(post.id);
-const html = renderBlocks(blocks);
+const html = await renderBlocks(blocks);
 ---
 <Layout title={post.title}>
   <article class="post-full cat-GALLERY">
