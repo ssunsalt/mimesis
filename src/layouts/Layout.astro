@@ -8,27 +8,51 @@ const { title = "Mimesis" } = Astro.props;
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="view-transition" content="same-origin" />
   <title>{title}</title>
 </head>
 <body>
-  <div class="wrap">
-    <header class="site-header">
-      <a href="/" class="site-logo-link">
-        <img src="/images/banner.png" alt="logo" class="site-logo" />
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a href="/" class="sidebar-logo">
+        <img src="/images/logo.png" alt="logo" />
       </a>
-    </header>
 
-    <nav class="category-list">
-      <a href="/trpg">TRPG</a>
-      <a href="/log">LOG</a>
-      <a href="/gallery">GALLERY</a>
-    </nav>
+      <button class="nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-label="메뉴 열기">
+        ✸
+      </button>
 
-    <div class="layout">
-      <main class="content">
+      <nav class="sidebar-nav" id="sidebarNav">
+        <a href="/mimesis">MIMESIS</a>
+        <a href="/gallery">GALLERY</a>
+        <a href="/trpg">TRPG</a>
+        <a href="/log">LOG</a>
+      </nav>
+    </aside>
+
+    <main class="main-content">
+      <div class="content-wrap">
         <slot />
-      </main>
-    </div>
+      </div>
+    </main>
+
+    <aside class="sidebar-right">
+      <div class="widget-slot" id="widget-music">
+        <!-- 뮤직 플레이어 위젯 자리 -->
+      </div>
+      <div class="widget-slot" id="widget-dday">
+        <!-- D-day 위젯 자리 -->
+      </div>
+    </aside>
   </div>
+
+  <script>
+    const toggle = document.getElementById("navToggle");
+    const nav = document.getElementById("sidebarNav");
+    toggle.addEventListener("click", () => {
+      const isOpen = nav.classList.toggle("is-open");
+      toggle.setAttribute("aria-expanded", String(isOpen));
+    });
+  </script>
 </body>
 </html>

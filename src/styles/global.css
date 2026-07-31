@@ -13,13 +13,14 @@
   --text: #e8e8e6;
   --text-sub: #8f8f8c;
   --radius: 8px;
+  --sidebar-width: 220px;
 }
 
 *{ box-sizing: border-box; }
 
 body{
   margin: 0;
-  background: var(--bg);
+  background: var(--bg) url('/images/bg.png') center / cover no-repeat fixed;
   color: var(--text);
   font-family: 'SandollJebi', -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 13px;
@@ -30,39 +31,116 @@ body{
 a{ color: inherit; text-decoration: none; }
 button{ font-family: inherit; }
 
-.wrap{ max-width: 720px; margin: 0 auto; padding: 0 24px; }
-
-.site-header{
-  position: relative;
-  padding: 64px 0 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+::view-transition-old(root),
+::view-transition-new(root){
+  animation-duration: 0.35s;
+  animation-timing-function: ease;
 }
-.site-logo-link{ display: block; }
-.site-logo{
-  max-height: 128px;
+
+/* ---------- 전체 뼈대: 좌 사이드바 / 중앙 콘텐츠 / 우 사이드바 ---------- */
+.app-shell{
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar{
+  width: var(--sidebar-width);
+  flex-shrink: 0;
+  padding: 40px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+/* 오른쪽 사이드바: 왼쪽과 같은 너비로 둬서 가운데 콘텐츠가 진짜 중앙에 오게 함 */
+.sidebar-right{
+  width: var(--sidebar-width);
+  flex-shrink: 0;
+  padding: 40px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.widget-slot{
+  min-height: 80px;
+}
+
+.sidebar-logo img{
+  margin-top: 10px;
+  margin-bottom: 30px;
+  width: 100%;
   display: block;
+  transition: opacity 0.2s ease;
+}
+.sidebar-logo:hover img{ opacity: 0.85; }
+
+.nav-toggle{
+  background: none;
+  border: none;
+  padding: 2px;
+  color: var(--text-sub);
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.25s ease, transform 0.35s ease;
+}
+.nav-toggle:hover{ color: var(--text); }
+.nav-toggle[aria-expanded="true"]{
+  color: var(--accent);
+  transform: rotate(45deg);
+}
+
+.sidebar-nav{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.35s ease, opacity 0.25s ease;
+}
+.sidebar-nav.is-open{
+  max-height: 260px;
+  opacity: 1;
+}
+
+.sidebar-nav a{
+  font-size: 12px;
+  color: var(--text-sub);
+  padding: 2px 4px;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: color 0.15s ease;
+}
+.sidebar-nav a:hover{ color: var(--accent); }
+
+.sidebar-nav.is-open a{
+  animation: navItemIn 0.35s ease forwards;
+}
+.sidebar-nav.is-open a:nth-child(1){ animation-delay: 0.04s; }
+.sidebar-nav.is-open a:nth-child(2){ animation-delay: 0.09s; }
+.sidebar-nav.is-open a:nth-child(3){ animation-delay: 0.14s; }
+.sidebar-nav.is-open a:nth-child(4){ animation-delay: 0.19s; }
+
+@keyframes navItemIn{
+  from{ opacity: 0; transform: translateY(-6px); }
+  to{ opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- 중앙 콘텐츠 영역 ---------- */
+.main-content{
+  flex: 1;
+  min-width: 0;
+  padding: 200px 24px 80px;
+}
+
+.content-wrap{
+  max-width: 680px;
   margin: 0 auto;
 }
-
-.category-list{
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 6px 20px;
-  padding: 8px 0 28px;
-  list-style: none;
-}
-.category-list a{
-  font-size: 11px;
-  color: var(--text-sub);
-  padding: 2px 0;
-}
-.category-list a:hover{ color: var(--accent); }
-
-.layout{ display: block; }
-.content{ padding: 8px 0 40px; }
 
 .post-list{
   list-style: none;
@@ -70,8 +148,16 @@ button{ font-family: inherit; }
   padding: 0;
 }
 .post-item{ margin-bottom: 4px; }
-.post-link{ display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding: 14px 0; }
-.post-title{ font-size: 13px; }
+.post-link{
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 0;
+  transition: transform 0.2s ease;
+}
+.post-link:hover{ transform: translateX(2px); }
+.post-title{ font-size: 13px; transition: color 0.15s ease; }
 .post-link:hover .post-title{ color: var(--accent); }
 .post-meta{ display: flex; gap: 8px; font-size: 11px; color: var(--text-sub); white-space: nowrap; }
 .post-thumb{ display: none; }
@@ -83,6 +169,10 @@ button{ font-family: inherit; }
 .post-full-body{ font-size: 14px; line-height: 1.85; }
 .post-full-body img{ max-width: 100%; height: auto; }
 
+.post-full-body p[data-ke-size]{
+  margin: 0;
+}
+
 .tag-list{ margin-top: 20px; font-size: 11px; color: var(--text-sub); }
 .tag-label-text{ margin-right: 6px; }
 
@@ -90,7 +180,6 @@ button{ font-family: inherit; }
 .page-num{ color: var(--text-sub); }
 .page-nums{ display: flex; gap: 10px; }
 
-/* GALLERY 카테고리: 3열 카드 그리드 */
 .post-list.is-gallery{
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -104,21 +193,12 @@ button{ font-family: inherit; }
   aspect-ratio: 1 / 1;
   background-size: cover;
   background-position: center;
-  transition: transform 0.35s ease;
+  transition: transform 0.4s ease;
 }
 .post-list.is-gallery .post-link:hover .post-thumb{ transform: scale(1.06); }
 .post-list.is-gallery .post-title,
 .post-list.is-gallery .post-meta{ display: none; }
 
-@media (max-width: 640px){
-  .wrap{ padding: 0 18px; }
-  .category-list{ gap: 6px 14px; }
-  .post-list.is-gallery{
-    grid-template-columns: repeat(2, 1fr);
-    gap: 14px;
-  }
-}
-/* Notion 컬럼 레이아웃 (나란히 배치된 블록들) */
 .notion-column-list{
   display: flex;
   gap: 16px;
@@ -134,13 +214,68 @@ button{ font-family: inherit; }
   display: block;
 }
 
-@media (max-width: 640px){
-  .notion-column-list{
-    flex-direction: column;
+.character-list{
+  display: flex;
+  flex-direction: column;
+  gap: 64px;
+}
+.character-card{
+  text-align: center;
+}
+.character-card img{
+  width: 100%;
+  max-width: 320px;
+  border-radius: var(--radius);
+  margin: 0 auto 16px;
+  display: block;
+  transition: transform 0.4s ease;
+}
+.character-card:hover img{ transform: scale(1.02); }
+.character-name{
+  font-size: 18px;
+  margin: 0 0 6px;
+}
+.character-desc{
+  font-size: 12px;
+  color: var(--text-sub);
+  line-height: 1.8;
+}
+
+@media (max-width: 1100px){
+  /* 화면이 좁아지면 오른쪽 위젯 사이드바부터 숨김 (콘텐츠 우선) */
+  .sidebar-right{ display: none; }
+}
+
+@media (max-width: 860px){
+  .app-shell{ flex-direction: column; }
+  .sidebar{
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    position: relative;
+  }
+  .sidebar-logo img{ width: 120px; }
+  .sidebar-nav{
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--bg);
+    padding: 8px 20px 16px;
+    z-index: 10;
+  }
+  .main-content{ padding: 32px 18px 60px; }
+  .post-list.is-gallery{
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
   }
 }
 
-/* 마스토돈 백업 도구가 만든 말풍선 안 문단(<p data-ke-size>)은 기본 여백 제거 */
-.post-full-body p[data-ke-size] {
-  margin: 0;
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

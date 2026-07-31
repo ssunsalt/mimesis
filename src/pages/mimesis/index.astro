@@ -1,0 +1,28 @@
+---
+import Layout from "../../layouts/Layout.astro";
+
+// 캐릭터 정보 - 여기 텍스트를 직접 수정하시면 돼요 (Notion과 무관한 정적 페이지입니다)
+const characters = [
+  {
+    name: "메티스",
+    image: "/images/metis.png",
+    desc: "여기에 캐릭터 소개 문구를 적어주세요.",
+  },
+  {
+    name: "미리엘",
+    image: "/images/myriel.png",
+    desc: "여기에 캐릭터 소개 문구를 적어주세요.",
+  },
+];
+---
+<Layout title="MIMESIS">
+  <div class="character-list">
+    {characters.map((c) => (
+      <div class="character-card">
+        <img src={c.image} alt={c.name} />
+        <h2 class="character-name">{c.name}</h2>
+        <p class="character-desc">{c.desc}</p>
+      </div>
+    ))}
+  </div>
+</Layout>
