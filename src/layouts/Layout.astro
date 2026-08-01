@@ -11,6 +11,16 @@ const { title = "Mimesis", wide = false } = Astro.props;
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <ClientRouter />
   <title>{title}</title>
+
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content="The sacrament of redemption" />
+  <meta property="og:image" content="https://sacrament-of-redemption.netlify.app/images/card.png" />
+  <meta property="og:type" content="website" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content="The sacrament of redemption" />
+  <meta name="twitter:image" content="https://sacrament-of-redemption.netlify.app/images/card.png" />
 </head>
 <body>
   <div class="app-shell">
