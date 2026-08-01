@@ -46,35 +46,31 @@ button{ font-family: inherit; }
 .sidebar{
   width: var(--sidebar-width);
   flex-shrink: 0;
-  padding: 40px 24px;
+  padding: 150px 24px 40px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 16px;
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  height: 100vh;
+  overflow-y: auto;
 }
 
-/* 오른쪽 사이드바: 왼쪽과 같은 너비로 둬서 가운데 콘텐츠가 진짜 중앙에 오게 함 */
 .sidebar-right{
   width: var(--sidebar-width);
   flex-shrink: 0;
-  padding: 40px 24px;
+  padding: 60px 24px 40px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 16px;
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  height: 100vh;
+  overflow-y: auto;
 }
-
-.widget-slot{
-  min-height: 80px;
-}
-
-.sidebar-logo img{
-  margin-top: 10px;
-  margin-bottom: 30px;
-  width: 100%;
-  display: block;
-  transition: opacity 0.2s ease;
-}
-.sidebar-logo:hover img{ opacity: 0.85; }
 
 .nav-toggle{
   background: none;
@@ -111,35 +107,307 @@ button{ font-family: inherit; }
   font-size: 12px;
   color: var(--text-sub);
   padding: 2px 4px;
-  opacity: 0;
-  transform: translateY(-6px);
   transition: color 0.15s ease;
 }
 .sidebar-nav a:hover{ color: var(--accent); }
 
-.sidebar-nav.is-open a{
+.sidebar-nav.animate-in a{
+  opacity: 0;
+  transform: translateY(-6px);
   animation: navItemIn 0.35s ease forwards;
 }
-.sidebar-nav.is-open a:nth-child(1){ animation-delay: 0.04s; }
-.sidebar-nav.is-open a:nth-child(2){ animation-delay: 0.09s; }
-.sidebar-nav.is-open a:nth-child(3){ animation-delay: 0.14s; }
-.sidebar-nav.is-open a:nth-child(4){ animation-delay: 0.19s; }
+.sidebar-nav.animate-in a:nth-child(1){ animation-delay: 0.04s; }
+.sidebar-nav.animate-in a:nth-child(2){ animation-delay: 0.09s; }
+.sidebar-nav.animate-in a:nth-child(3){ animation-delay: 0.14s; }
+.sidebar-nav.animate-in a:nth-child(4){ animation-delay: 0.19s; }
 
 @keyframes navItemIn{
   from{ opacity: 0; transform: translateY(-6px); }
   to{ opacity: 1; transform: translateY(0); }
 }
 
+/* ---------- D-day 위젯 (절반 높이 + 제비체) ---------- */
+.dday-widget{
+  position: relative;
+  height: 60px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background-color: #555555;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+}
+.dday-widget::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to left, rgba(0,0,0,0.75), rgba(0,0,0,0) 70%);
+}
+.dday-text{
+  position: relative;
+  z-index: 1;
+  font-family: 'SandollJebi', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #ffffff;
+  letter-spacing: 0.02em;
+}
+
+/* ---------- 뮤직 플레이어 위젯 (고정형) ---------- */
+.fp-container{
+  width: 100%;
+  font-family: 'SandollJebi', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-sub);
+  border-radius: var(--radius);
+  padding: 12px 12px 10px;
+  color: var(--text);
+  user-select: none;
+  opacity: 0.9;
+}
+
+.fp-cover{
+  width: 72%;
+  margin: 0 auto;
+  aspect-ratio: 1 / 1;
+  border-radius: 4px;
+  overflow: hidden;
+  background: rgba(255,255,255,0.06);
+}
+.fp-cover img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.fp-cover img:not([src]), .fp-cover img[src=""]{ display: none; }
+
+.fp-track-name-wrap{
+  margin-top: 6px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-align: center;
+}
+.fp-track-name{
+  font-size: 12px;
+  color: var(--text-sub);
+  display: inline-block;
+  white-space: nowrap;
+}
+
+/* 한 방향으로만 천천히 흐르는 마퀴 (왕복 아님) */
+@keyframes fp-marquee-scroll{
+  0%, 8%   { transform: translateX(0); }
+  92%, 100%{ transform: translateX(var(--marquee-dist, 0)); }
+}
+.fp-marquee{
+  animation-name: fp-marquee-scroll;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.fp-progress-row{
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.fp-time{
+  font-size: 9px;
+  color: var(--text-sub);
+  min-width: 24px;
+}
+#fpDuration{ text-align: right; }
+
+.fp-progress-track{
+  flex: 1;
+  height: 3px;
+  background: rgba(255,255,255,0.12);
+  border-radius: 2px;
+  cursor: pointer;
+  position: relative;
+}
+.fp-progress-fill{
+  position: absolute;
+  top: 0; left: 0;
+  height: 100%;
+  width: 0%;
+  background: var(--accent);
+  border-radius: 2px;
+}
+
+.fp-controls{
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+}
+.fp-btn{
+  background: transparent;
+  border: none;
+  color: var(--text-sub);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s ease, transform 0.1s ease;
+}
+.fp-btn:hover{ color: var(--text); }
+.fp-btn:active{ transform: scale(0.9); }
+.fp-btn.fp-active{ color: var(--accent); }
+.fp-btn-play{ color: var(--text); }
+
+/* 음량 슬라이더: 아이콘 없이 얇은 라인 형태. 좌우 여백 0으로 통일해서
+   위의 진행바(.fp-progress-track)·표지 이미지 등과 정확히 같은 폭으로 맞춤 */
+.fp-volume-row{
+  margin-top: 6px;
+  padding: 0;
+}
+.fp-volume-row input[type="range"]{
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 1px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 1px;
+  cursor: pointer;
+}
+.fp-volume-row input[type="range"]::-webkit-slider-thumb{
+  -webkit-appearance: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-top: -2.5px;
+}
+.fp-volume-row input[type="range"]::-moz-range-thumb{
+  width: 6px;
+  height: 6px;
+  border: none;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.fp-volume-row input[type="range"]::-webkit-slider-runnable-track{
+  height: 1px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 1px;
+}
+.fp-volume-row input[type="range"]::-moz-range-track{
+  height: 1px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 1px;
+}
+
+/* "아래로 펼치기" 버튼 - 채워진 삼각형 아이콘 */
+.fp-expand-btn{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 4px;
+  background: none;
+  border: none;
+  color: var(--text-sub);
+  cursor: pointer;
+  padding: 3px;
+  transition: color 0.2s ease;
+}
+.fp-expand-btn:hover{ color: var(--text); }
+.fp-expand-icon{ display: inline-flex; transition: transform 0.25s ease; }
+.fp-expand-btn[aria-expanded="true"]{ color: var(--accent); }
+.fp-expand-btn[aria-expanded="true"] .fp-expand-icon{ transform: rotate(180deg); }
+
+/* 펼쳐지는 재생목록 */
+.fp-playlist{
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.3s ease, opacity 0.2s ease;
+  display: flex;
+  flex-direction: column;
+}
+.fp-playlist.is-open{
+  max-height: 220px;
+  opacity: 1;
+  overflow-y: auto;
+  margin-top: 6px;
+  /* Firefox: 얇고 은은한 스크롤바 */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.14) transparent;
+}
+/* Chrome/Safari/Edge: 화살표 버튼, 굵은 트랙 없이 얇은 선 하나만 */
+.fp-playlist.is-open::-webkit-scrollbar{
+  width: 2px;
+}
+.fp-playlist.is-open::-webkit-scrollbar-track{
+  background: transparent;
+}
+.fp-playlist.is-open::-webkit-scrollbar-thumb{
+  background: rgba(255,255,255,0.14);
+  border-radius: 2px;
+}
+.fp-playlist.is-open::-webkit-scrollbar-thumb:hover{
+  background: rgba(255,255,255,0.2); /* 아주 살짝만 밝게 */
+}
+/* 위/아래 화살표 버튼 확실히 제거 (Windows Chrome/Edge 대응) */
+.fp-playlist.is-open::-webkit-scrollbar-button,
+.fp-playlist.is-open::-webkit-scrollbar-button:start,
+.fp-playlist.is-open::-webkit-scrollbar-button:end,
+.fp-playlist.is-open::-webkit-scrollbar-button:single-button,
+.fp-playlist.is-open::-webkit-scrollbar-button:single-button:vertical:decrement,
+.fp-playlist.is-open::-webkit-scrollbar-button:single-button:vertical:increment{
+  display: none;
+  width: 0;
+  height: 0;
+}
+.fp-playlist.is-open::-webkit-scrollbar-corner{
+  background: transparent;
+}
+.fp-playlist-item{
+  background: none;
+  border: none;
+  text-align: left;
+  color: var(--text-sub);
+  font-size: 11px;
+  padding: 6px 4px;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+.fp-playlist-item:hover{ color: var(--text); }
+.fp-playlist-item.is-current{ color: var(--accent); font-weight: 600; }
+
+/* ---------- 중앙 상단 고정 로고 ---------- */
+.top-logo{
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: transparent;
+  display: flex;
+  justify-content: center;
+  padding: 45px 0;
+}
+.top-logo-link img{
+  width: 280px; /* 로고 크기는 이 숫자로 조절 */
+  display: block;
+  transition: opacity 0.2s ease;
+}
+.top-logo-link:hover img{ opacity: 0.85; }
+
 /* ---------- 중앙 콘텐츠 영역 ---------- */
 .main-content{
   flex: 1;
   min-width: 0;
-  padding: 200px 24px 80px;
+  padding: 0px 24px 80px;
 }
 
 .content-wrap{
   max-width: 680px;
   margin: 0 auto;
+  margin-top: 40px; /* 이 숫자로 로고-본문 사이 간격 조절 */
 }
 
 .post-list{
@@ -242,7 +510,6 @@ button{ font-family: inherit; }
 }
 
 @media (max-width: 1100px){
-  /* 화면이 좁아지면 오른쪽 위젯 사이드바부터 숨김 (콘텐츠 우선) */
   .sidebar-right{ display: none; }
 }
 
@@ -254,9 +521,19 @@ button{ font-family: inherit; }
     align-items: center;
     justify-content: space-between;
     padding: 16px 20px;
-    position: relative;
+    height: auto;
+    overflow: visible;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: var(--bg);
   }
-  .sidebar-logo img{ width: 120px; }
+  .top-logo{
+    position: static;
+    padding: 20px 0;
+    background: none;
+  }
+  .top-logo-link img{ width: 140px; }
   .sidebar-nav{
     position: absolute;
     top: 100%;
@@ -266,7 +543,7 @@ button{ font-family: inherit; }
     padding: 8px 20px 16px;
     z-index: 10;
   }
-  .main-content{ padding: 32px 18px 60px; }
+  .main-content{ padding: 0 18px 60px; }
   .post-list.is-gallery{
     grid-template-columns: repeat(2, 1fr);
     gap: 14px;
@@ -278,4 +555,29 @@ button{ font-family: inherit; }
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* ---------- 클리커 스티커 (플로팅, 드래그 가능) ---------- */
+.clicker-sticker{
+  position: fixed;
+  width: 128px;
+  height: 128px;
+  z-index: 999998;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  transform-origin: bottom center;
+  filter: drop-shadow(0 10px 10px rgba(0,0,0,0.4));
+  transition: transform 0.14s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.clicker-sticker:active{ cursor: grabbing; }
+.clicker-sticker img{
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  pointer-events: none;
+}
+.clicker-sticker.is-pressed{
+  transform: scaleY(0.82) scaleX(1.06);
 }

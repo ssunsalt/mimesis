@@ -1,28 +1,581 @@
 ---
-import Layout from "../../layouts/Layout.astro";
+import "../styles/global.css";
+import { ClientRouter } from "astro:transitions";
 
-// 캐릭터 정보 - 여기 텍스트를 직접 수정하시면 돼요 (Notion과 무관한 정적 페이지입니다)
-const characters = [
-  {
-    name: "메티스",
-    image: "/images/metis.png",
-    desc: "여기에 캐릭터 소개 문구를 적어주세요.",
-  },
-  {
-    name: "미리엘",
-    image: "/images/myriel.png",
-    desc: "여기에 캐릭터 소개 문구를 적어주세요.",
-  },
-];
+const { title = "Mimesis" } = Astro.props;
 ---
-<Layout title="MIMESIS">
-  <div class="character-list">
-    {characters.map((c) => (
-      <div class="character-card">
-        <img src={c.image} alt={c.name} />
-        <h2 class="character-name">{c.name}</h2>
-        <p class="character-desc">{c.desc}</p>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <ClientRouter />
+  <title>{title}</title>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" transition:persist>
+      <button class="nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-label="메뉴 열기">
+        ✸
+      </button>
+
+      <nav class="sidebar-nav" id="sidebarNav">
+        <a href="/mimesis">MIMESIS</a>
+        <a href="/gallery">GALLERY</a>
+        <a href="/trpg">TRPG</a>
+        <a href="/log">LOG</a>
+      </nav>
+    </aside>
+
+    <main class="main-content">
+      <div class="top-logo" transition:persist>
+        <a href="/" class="top-logo-link">
+          <img src="/images/logo.png" alt="logo" />
+        </a>
       </div>
-    ))}
+
+      <div class="content-wrap">
+        <slot />
+      </div>
+    </main>
+
+    <aside class="sidebar-right" transition:persist>
+      <!-- D-day 위젯 -->
+      <div class="dday-widget" id="ddayWidget" style="background-image: url('/images/dday.png');">
+        <span class="dday-text" id="ddayText">D+1</span>
+      </div>
+
+      <!-- 뮤직 플레이어 위젯 (고정형) -->
+      <div id="fpPlayer" class="fp-container">
+        <div class="fp-cover">
+          <img id="fpCoverImg" src="" alt="" />
+        </div>
+
+        <div class="fp-track-name-wrap"><span class="fp-track-name" id="fpTrackName">불러오는 중…</span></div>
+
+        <div class="fp-progress-row">
+          <span class="fp-time" id="fpCurrentTime">00:00</span>
+          <div class="fp-progress-track" id="fpProgressTrack">
+            <div class="fp-progress-fill" id="fpProgressFill"></div>
+          </div>
+          <span class="fp-time" id="fpDuration">00:00</span>
+        </div>
+
+        <div class="fp-controls">
+          <button class="fp-btn fp-btn-small" id="fpRepeatBtn" title="반복" aria-label="반복">
+            <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M17 17H7v-3l-4 4 4 4v-3h12v-6h-2v4M7 7h10v3l4-4-4-4v3H5v6h2V7z"/></svg>
+          </button>
+          <button class="fp-btn" id="fpPrevBtn" title="이전 곡" aria-label="이전 곡">
+            <svg viewBox="0 0 24 24" width="15" height="15"><path fill="currentColor" d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+          </button>
+          <button class="fp-btn fp-btn-play" id="fpPlayBtn" title="재생/일시정지" aria-label="재생/일시정지">
+            <svg viewBox="0 0 24 24" width="16" height="16" id="fpPlayIcon"><path fill="currentColor" d="M8 5v14l11-7z"/></svg>
+          </button>
+          <button class="fp-btn" id="fpNextBtn" title="다음 곡" aria-label="다음 곡">
+            <svg viewBox="0 0 24 24" width="15" height="15"><path fill="currentColor" d="M16 6h2v12h-2zM6 18l8.5-6L6 6z"/></svg>
+          </button>
+          <button class="fp-btn fp-btn-small" id="fpShuffleBtn" title="셔플" aria-label="셔플">
+            <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M10.6 6.4L8.7 4.5H2v2h6l1.6 1.6zM17 4.5l3.5 3.5L17 11.5V9h-3.6l-2-2 2-2H17zM8.7 19.5H2v-2h6l7.7-7.7L17 12l-7.7 7.7z"/></svg>
+          </button>
+        </div>
+
+        <div class="fp-volume-row">
+          <input type="range" id="fpVolumeSlider" min="0" max="100" value="70" />
+        </div>
+
+        <button class="fp-expand-btn" id="fpExpandBtn" type="button" aria-expanded="false" aria-label="재생목록 펼치기">
+          <span class="fp-expand-icon">
+            <svg viewBox="0 0 12 12" width="10" height="10"><path fill="currentColor" d="M2 4h8l-4 5z"/></svg>
+          </span>
+        </button>
+
+        <div class="fp-playlist" id="fpPlaylist"></div>
+      </div>
+    </aside>
   </div>
-</Layout>
+
+  <div id="fpYtHost" transition:persist style="position:absolute;width:0;height:0;overflow:hidden;"></div>
+
+  <!-- 클리커 스티커 (플로팅, 드래그 가능) -->
+  <div id="clicker1" class="clicker-sticker" transition:persist>
+    <img src="/images/Clicker1.png" alt="클리커1" draggable="false" />
+  </div>
+  <div id="clicker2" class="clicker-sticker" transition:persist>
+    <img src="/images/Clicker2.png" alt="클리커2" draggable="false" />
+  </div>
+
+  <script>
+    // ------------------------------------------------------------
+    // 사이드 메뉴 (열림/닫힘 상태 유지 + 클릭시에만 애니메이션)
+    // ------------------------------------------------------------
+    const toggle = document.getElementById("navToggle");
+    const nav = document.getElementById("sidebarNav");
+
+    if (localStorage.getItem("navOpen") === "true") {
+      nav.classList.add("is-open");
+      toggle.setAttribute("aria-expanded", "true");
+    }
+
+    toggle.addEventListener("click", () => {
+      const willOpen = !nav.classList.contains("is-open");
+      if (willOpen) {
+        nav.classList.add("is-open", "animate-in");
+      } else {
+        nav.classList.remove("is-open", "animate-in");
+      }
+      toggle.setAttribute("aria-expanded", String(willOpen));
+      localStorage.setItem("navOpen", String(willOpen));
+    });
+
+    // ------------------------------------------------------------
+    // D-day (2026-04-01 = 1일차)
+    // ------------------------------------------------------------
+    const startDate = new Date(2026, 3, 1);
+    const today = new Date();
+    startDate.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
+    const diffDays = Math.floor((today - startDate) / (1000 * 60 * 60 * 24)) + 1;
+    const ddayEl = document.getElementById("ddayText");
+    if (ddayEl) {
+      ddayEl.textContent = diffDays >= 1 ? `D+${diffDays}` : `D${diffDays - 1}`;
+    }
+  </script>
+
+  <script>
+  (function () {
+    // ============================================================
+    // CONFIG
+    // 커버 이미지를 바꾸려면 이 URL만 교체하면 됩니다.
+    // 외부 링크 대신 /images/파일명.png 처럼 로컬 파일을 쓰는 걸 추천해요
+    // (public/images 폴더에 넣고 아래처럼 경로만 적으면 됨)
+    // ============================================================
+    var COVER_IMAGE_URL = '/images/cover.png';
+    var PLAYLIST_ID = 'PLOvyspt6w_RQ';
+
+    if (COVER_IMAGE_URL) {
+      document.getElementById('fpCoverImg').src = COVER_IMAGE_URL;
+    }
+
+    // ============================================================
+    // 유튜브 IFrame API
+    // ============================================================
+    var player, isShuffle = false, isRepeatOne = false, isReady = false;
+
+    var tag = document.createElement('script');
+    tag.src = 'https://www.youtube.com/iframe_api';
+    document.head.appendChild(tag);
+
+    window.onYouTubeIframeAPIReady = function () {
+      var playerVars = { autoplay: 0, controls: 0 };
+      var savedPlayback = loadPlaybackState();
+      if (!savedPlayback) {
+        playerVars.listType = 'playlist';
+        playerVars.list = PLAYLIST_ID;
+      }
+
+      player = new YT.Player('fpYtHost', {
+        height: '0',
+        width: '0',
+        playerVars: playerVars,
+        events: {
+          onReady: function () {
+            isReady = true;
+            if (savedPlayback && typeof savedPlayback.index === 'number') {
+              player.cuePlaylist({
+                listType: 'playlist',
+                list: PLAYLIST_ID,
+                index: savedPlayback.index,
+                startSeconds: savedPlayback.time || 0
+              });
+            }
+            var vol = player.getVolume();
+            document.getElementById('fpVolumeSlider').value = vol;
+            buildPlaylist();
+          },
+          onStateChange: onPlayerStateChange
+        }
+      });
+    };
+
+    // ============================================================
+    // 재생 위치 저장/복원 (새로고침·페이지 이동 시 이어듣기)
+    // ============================================================
+    var PLAYBACK_STORAGE_KEY = 'fpPlaybackState';
+
+    function loadPlaybackState() {
+      try { return JSON.parse(localStorage.getItem(PLAYBACK_STORAGE_KEY) || 'null'); }
+      catch (err) { return null; }
+    }
+    function savePlaybackState() {
+      if (!isReady) return;
+      try {
+        var idx = player.getPlaylistIndex();
+        var time = player.getCurrentTime();
+        if (idx >= 0 && time >= 0) {
+          localStorage.setItem(PLAYBACK_STORAGE_KEY, JSON.stringify({ index: idx, time: time }));
+        }
+      } catch (err) {}
+    }
+    window.addEventListener('beforeunload', savePlaybackState);
+    window.addEventListener('pagehide', savePlaybackState);
+
+    function onPlayerStateChange(e) {
+      var playIcon = document.getElementById('fpPlayIcon');
+      if (e.data === YT.PlayerState.PLAYING) {
+        playIcon.innerHTML = '<path fill="currentColor" d="M6 5h4v14H6zm8 0h4v14h-4z"/>';
+        updateTrackInfo();
+        startProgressLoop();
+      } else if (e.data === YT.PlayerState.PAUSED) {
+        playIcon.innerHTML = '<path fill="currentColor" d="M8 5v14l11-7z"/>';
+        stopProgressLoop();
+        savePlaybackState();
+      } else if (e.data === YT.PlayerState.ENDED) {
+        if (isRepeatOne) { player.seekTo(0); player.playVideo(); }
+        else if (isShuffle) { playRandom(); }
+      } else if (e.data === YT.PlayerState.CUED) {
+        updateTrackInfo();
+      }
+      // 재생목록이 아직 안 만들어졌으면 상태 변화가 있을 때마다 다시 시도
+      // (이어듣기 상태로 시작할 때는 onReady 시점에 목록이 아직 로드 전이라 비어있을 수 있음)
+      if (!playlistEl.dataset.built) {
+        buildPlaylist();
+      }
+      highlightCurrentTrack();
+    }
+
+    function updateTrackInfo() {
+      try {
+        var data = player.getVideoData();
+        var title = data && data.title ? data.title : '재생목록 불러오는 중…';
+        document.getElementById('fpTrackName').textContent = title;
+        applyMarquee('fpTrackName');
+      } catch (err) {}
+    }
+
+    function applyMarquee(elId) {
+      var el = document.getElementById(elId);
+      var wrap = el.parentElement;
+      el.classList.remove('fp-marquee');
+      el.style.removeProperty('--marquee-dist');
+      el.style.animationDuration = '';
+      void el.offsetWidth;
+      var overflow = el.scrollWidth - wrap.clientWidth;
+      if (overflow > 4) {
+        el.style.setProperty('--marquee-dist', (-overflow) + 'px');
+        var duration = Math.max(6, overflow / 10); // 느리게
+        el.style.animationDuration = duration + 's';
+        el.classList.add('fp-marquee');
+      }
+    }
+
+    function playRandom() {
+      try {
+        var playlist = player.getPlaylist();
+        if (!playlist || playlist.length < 2) return;
+        var current = player.getPlaylistIndex();
+        var next;
+        do { next = Math.floor(Math.random() * playlist.length); } while (next === current);
+        player.playVideoAt(next);
+      } catch (err) {}
+    }
+
+    // ============================================================
+    // 컨트롤 버튼
+    // ============================================================
+    document.getElementById('fpPlayBtn').addEventListener('click', togglePlay);
+    function togglePlay() {
+      if (!isReady) return;
+      var state = player.getPlayerState();
+      if (state === YT.PlayerState.PLAYING) player.pauseVideo();
+      else player.playVideo();
+    }
+    function getPlaylistLength() {
+      try {
+        var list = player.getPlaylist();
+        return list ? list.length : 0;
+      } catch (err) { return 0; }
+    }
+
+    document.getElementById('fpPrevBtn').addEventListener('click', function () {
+      if (!isReady) return;
+      var count = getPlaylistLength();
+      if (!count) return;
+      var idx = player.getPlaylistIndex();
+      var target = (idx - 1 + count) % count;
+      player.playVideoAt(target);
+    });
+    document.getElementById('fpNextBtn').addEventListener('click', function () {
+      if (!isReady) return;
+      if (isShuffle) { playRandom(); return; }
+      var count = getPlaylistLength();
+      if (!count) return;
+      var idx = player.getPlaylistIndex();
+      var target = (idx + 1) % count;
+      player.playVideoAt(target);
+    });
+    document.getElementById('fpRepeatBtn').addEventListener('click', function () {
+      isRepeatOne = !isRepeatOne;
+      document.getElementById('fpRepeatBtn').classList.toggle('fp-active', isRepeatOne);
+    });
+    document.getElementById('fpShuffleBtn').addEventListener('click', function () {
+      isShuffle = !isShuffle;
+      document.getElementById('fpShuffleBtn').classList.toggle('fp-active', isShuffle);
+    });
+
+    // ============================================================
+    // 음량 조절
+    // ============================================================
+    var volumeSlider = document.getElementById('fpVolumeSlider');
+    volumeSlider.addEventListener('input', function () {
+      if (!isReady) return;
+      var v = parseInt(this.value, 10);
+      player.setVolume(v);
+      if (v === 0) player.mute(); else player.unMute();
+    });
+
+    document.getElementById('fpProgressTrack').addEventListener('click', function (e) {
+      if (!isReady) return;
+      var rect = this.getBoundingClientRect();
+      var ratio = (e.clientX - rect.left) / rect.width;
+      var duration = player.getDuration();
+      if (duration) player.seekTo(duration * ratio, true);
+    });
+
+    // ============================================================
+    // "아래로 펼치기" 버튼 → 재생목록 표시/숨김
+    // ============================================================
+    var expandBtn = document.getElementById('fpExpandBtn');
+    var playlistEl = document.getElementById('fpPlaylist');
+    var PLAYLIST_OPEN_KEY = 'fpPlaylistOpen';
+
+    // 새로고침 등으로 완전히 새로 불러왔을 때도 펼침 상태 복원
+    if (localStorage.getItem(PLAYLIST_OPEN_KEY) === 'true') {
+      playlistEl.classList.add('is-open');
+      expandBtn.setAttribute('aria-expanded', 'true');
+    }
+
+    expandBtn.addEventListener('click', function () {
+      var willOpen = !playlistEl.classList.contains('is-open');
+      playlistEl.classList.toggle('is-open', willOpen);
+      expandBtn.setAttribute('aria-expanded', String(willOpen));
+      localStorage.setItem(PLAYLIST_OPEN_KEY, String(willOpen));
+    });
+
+    function buildPlaylist() {
+      try {
+        var ids = player.getPlaylist();
+        if (!ids || !ids.length) return;
+        playlistEl.innerHTML = '';
+        ids.forEach(function (id, i) {
+          var item = document.createElement('button');
+          item.type = 'button';
+          item.className = 'fp-playlist-item';
+          item.dataset.index = i;
+          item.textContent = (i + 1) + '. 불러오는 중…';
+          item.addEventListener('click', function () {
+            player.playVideoAt(i);
+          });
+          playlistEl.appendChild(item);
+
+          // API 키 없이 제목만 가져오는 방법 (youtube oEmbed)
+          fetch('https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=' + id + '&format=json')
+            .then(function (res) { return res.ok ? res.json() : null; })
+            .then(function (data) {
+              if (data && data.title) {
+                item.textContent = (i + 1) + '. ' + data.title;
+              }
+            })
+            .catch(function () {
+              item.textContent = (i + 1) + '번 트랙';
+            });
+        });
+        playlistEl.dataset.built = '1';
+        highlightCurrentTrack();
+      } catch (err) {}
+    }
+
+    function highlightCurrentTrack() {
+      try {
+        var idx = player.getPlaylistIndex();
+        var items = playlistEl.querySelectorAll('.fp-playlist-item');
+        items.forEach(function (el) {
+          el.classList.toggle('is-current', parseInt(el.dataset.index, 10) === idx);
+        });
+      } catch (err) {}
+    }
+
+    // ============================================================
+    // 진행바 / 시간 갱신
+    // ============================================================
+    var progressTimer = null;
+    var lastSaveAt = 0;
+    function formatTime(sec) {
+      sec = Math.floor(sec || 0);
+      var m = Math.floor(sec / 60);
+      var s = sec % 60;
+      return m + ':' + (s < 10 ? '0' : '') + s;
+    }
+    function startProgressLoop() {
+      stopProgressLoop();
+      progressTimer = setInterval(function () {
+        if (!isReady) return;
+        var current = player.getCurrentTime() || 0;
+        var duration = player.getDuration() || 0;
+        document.getElementById('fpProgressFill').style.width = (duration ? (current / duration) * 100 : 0) + '%';
+        document.getElementById('fpCurrentTime').textContent = formatTime(current);
+        document.getElementById('fpDuration').textContent = formatTime(duration);
+        var now = Date.now();
+        if (now - lastSaveAt > 4000) { lastSaveAt = now; savePlaybackState(); }
+      }, 500);
+    }
+    function stopProgressLoop() {
+      if (progressTimer) clearInterval(progressTimer);
+    }
+  })();
+  </script>
+
+  <script>
+  (function () {
+    // ============================================================
+    // 클리커 스티커: 드래그로 이동, 클릭하면 짜부라지며 소리
+    // ============================================================
+    var zCounter = 999998;
+    function bringToFront(el) {
+      zCounter += 1;
+      el.style.zIndex = zCounter;
+    }
+
+    function playClickSound(weight) {
+      try {
+        var AC = window.AudioContext || window.webkitAudioContext;
+        var ctx = window.__clickerAudioCtx || (window.__clickerAudioCtx = new AC());
+        var now = ctx.currentTime;
+        var isHeavy = weight === 'heavy';
+        var freq = isHeavy ? 650 : 1500;
+        var gainPeak = isHeavy ? 0.23 : 0.2;
+        var duration = isHeavy ? 0.09 : 0.045;
+
+        var o = ctx.createOscillator();
+        var g = ctx.createGain();
+        o.type = 'square';
+        o.frequency.setValueAtTime(freq, now);
+        g.gain.setValueAtTime(gainPeak, now);
+        g.gain.exponentialRampToValueAtTime(0.001, now + duration);
+        o.connect(g);
+        g.connect(ctx.destination);
+        o.start(now);
+        o.stop(now + duration);
+
+        if (isHeavy) {
+          // 묵직한 느낌을 더하는 낮은 보조음
+          var o2 = ctx.createOscillator();
+          var g2 = ctx.createGain();
+          o2.type = 'sine';
+          o2.frequency.setValueAtTime(150, now);
+          g2.gain.setValueAtTime(0.16, now);
+          g2.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+          o2.connect(g2);
+          g2.connect(ctx.destination);
+          o2.start(now);
+          o2.stop(now + 0.12);
+        }
+      } catch (err) {}
+    }
+
+    function initClicker(elId, storageKey, defaultRight, defaultBottom, soundWeight) {
+      var el = document.getElementById(elId);
+      if (!el || el.dataset.clickerInit) return;
+      el.dataset.clickerInit = '1';
+
+      function applyPosition(left, top) {
+        var maxX = window.innerWidth - el.offsetWidth;
+        var maxY = window.innerHeight - el.offsetHeight;
+        left = Math.max(0, Math.min(left, maxX));
+        top = Math.max(0, Math.min(top, maxY));
+        el.style.left = left + 'px';
+        el.style.top = top + 'px';
+      }
+
+      function restorePosition() {
+        try {
+          var pos = JSON.parse(localStorage.getItem(storageKey) || 'null');
+          if (pos && typeof pos.left === 'number' && typeof pos.top === 'number') {
+            applyPosition(pos.left, pos.top);
+            return;
+          }
+        } catch (err) {}
+        applyPosition(
+          window.innerWidth - el.offsetWidth - defaultRight,
+          window.innerHeight - el.offsetHeight - defaultBottom
+        );
+      }
+
+      function savePosition() {
+        try {
+          var rect = el.getBoundingClientRect();
+          localStorage.setItem(storageKey, JSON.stringify({ left: rect.left, top: rect.top }));
+        } catch (err) {}
+      }
+
+      restorePosition();
+      bringToFront(el);
+
+      var dragging = false, moved = false, offsetX = 0, offsetY = 0, startX = 0, startY = 0;
+
+      function onDown(clientX, clientY) {
+        var rect = el.getBoundingClientRect();
+        offsetX = clientX - rect.left;
+        offsetY = clientY - rect.top;
+        startX = clientX;
+        startY = clientY;
+        dragging = true;
+        moved = false;
+        bringToFront(el);
+        el.classList.add('is-pressed');
+      }
+      function onMove(clientX, clientY) {
+        if (!dragging) return;
+        if (Math.abs(clientX - startX) > 4 || Math.abs(clientY - startY) > 4) {
+          if (!moved) el.classList.remove('is-pressed');
+          moved = true;
+        }
+        if (moved) applyPosition(clientX - offsetX, clientY - offsetY);
+      }
+      function onUp() {
+        if (!dragging) return;
+        dragging = false;
+        if (moved) {
+          savePosition();
+        } else {
+          playClickSound(soundWeight);
+          setTimeout(function () { el.classList.remove('is-pressed'); }, 120);
+        }
+      }
+
+      el.addEventListener('mousedown', function (e) { onDown(e.clientX, e.clientY); e.preventDefault(); });
+      document.addEventListener('mousemove', function (e) { onMove(e.clientX, e.clientY); });
+      document.addEventListener('mouseup', onUp);
+
+      el.addEventListener('touchstart', function (e) {
+        var t = e.touches[0];
+        onDown(t.clientX, t.clientY);
+      }, { passive: true });
+      document.addEventListener('touchmove', function (e) {
+        if (!dragging) return;
+        var t = e.touches[0];
+        onMove(t.clientX, t.clientY);
+      }, { passive: true });
+      document.addEventListener('touchend', onUp);
+
+      window.addEventListener('resize', function () {
+        var rect = el.getBoundingClientRect();
+        applyPosition(rect.left, rect.top);
+      });
+    }
+
+    initClicker('clicker1', 'clickerPos1', 155, 70, 'heavy');
+    initClicker('clicker2', 'clickerPos2', 50, 70, 'light');
+  })();
+  </script>
+</body>
+</html>
