@@ -629,10 +629,10 @@ button{ font-family: inherit; }
 .character-icon{
   display: block;
   font-size: 20px;
-  margin: 0 0 6px;
+  margin: 0 0 15px;
 }
 .character-name-kr{
-  font-size: 20px;
+  font-size: 18px;
   line-height: 1.15;
   color: var(--text-sub);
   margin: 0 0 2px;
@@ -645,17 +645,17 @@ button{ font-family: inherit; }
   font-weight: 400; /* 볼드 없음 */
   font-family: 'UnifrakturMaguntia', 'SandollJebi', sans-serif;
   color: var(--text);
-  margin: 0 0 10px;
+  margin: 0 0 0px;
   letter-spacing: 0.01em;
   white-space: nowrap;
 }
 .character-stats{
   display: inline-block;
-  background: #c9c9c9;
-  color: #3a3a3a;
-  font-size: 16px;
+  background: #0d0d0d;
+  color: #8c8c8c;
+  font-size: 14px;
   font-weight: 500;
-  padding: 2px 8px; /* 박스 내부 여백 최소화 */
+  padding: 2px 15px; /* 박스 내부 여백 최소화 */
   border-radius: 0;
   line-height: 1.2;
   white-space: nowrap;
