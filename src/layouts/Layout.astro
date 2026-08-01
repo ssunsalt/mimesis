@@ -166,7 +166,7 @@ const { title = "Mimesis" } = Astro.props;
     document.head.appendChild(tag);
 
     window.onYouTubeIframeAPIReady = function () {
-      var playerVars = { autoplay: 0, controls: 0 };
+      var playerVars = { autoplay: 1, controls: 0 };
       var savedPlayback = loadPlaybackState();
       if (!savedPlayback) {
         playerVars.listType = 'playlist';
@@ -188,8 +188,9 @@ const { title = "Mimesis" } = Astro.props;
                 startSeconds: savedPlayback.time || 0
               });
             }
-            var vol = player.getVolume();
-            document.getElementById('fpVolumeSlider').value = vol;
+            player.setVolume(30);
+            document.getElementById('fpVolumeSlider').value = 30;
+            player.playVideo();
             buildPlaylist();
           },
           onStateChange: onPlayerStateChange
@@ -371,10 +372,22 @@ const { title = "Mimesis" } = Astro.props;
           item.type = 'button';
           item.className = 'fp-playlist-item';
           item.dataset.index = i;
-          item.textContent = (i + 1) + '. 불러오는 중…';
+
+          var textEl = document.createElement('span');
+          textEl.className = 'fp-playlist-item-text';
+          textEl.textContent = '불러오는 중…';
+          item.appendChild(textEl);
+
           item.addEventListener('click', function () {
             player.playVideoAt(i);
           });
+          item.addEventListener('mouseenter', function () {
+            applyMarqueeEl(textEl, item);
+          });
+          item.addEventListener('mouseleave', function () {
+            resetMarqueeEl(textEl);
+          });
+
           playlistEl.appendChild(item);
 
           // API 키 없이 제목만 가져오는 방법 (youtube oEmbed)
@@ -382,16 +395,34 @@ const { title = "Mimesis" } = Astro.props;
             .then(function (res) { return res.ok ? res.json() : null; })
             .then(function (data) {
               if (data && data.title) {
-                item.textContent = (i + 1) + '. ' + data.title;
+                textEl.textContent = data.title;
               }
             })
             .catch(function () {
-              item.textContent = (i + 1) + '번 트랙';
+              textEl.textContent = '제목을 불러올 수 없음';
             });
         });
         playlistEl.dataset.built = '1';
         highlightCurrentTrack();
       } catch (err) {}
+    }
+
+    function resetMarqueeEl(el) {
+      el.classList.remove('fp-marquee');
+      el.style.removeProperty('--marquee-dist');
+      el.style.animationDuration = '';
+    }
+
+    function applyMarqueeEl(el, wrap) {
+      resetMarqueeEl(el);
+      void el.offsetWidth;
+      var overflow = el.scrollWidth - wrap.clientWidth;
+      if (overflow > 4) {
+        el.style.setProperty('--marquee-dist', (-overflow) + 'px');
+        var duration = Math.max(4, overflow / 12);
+        el.style.animationDuration = duration + 's';
+        el.classList.add('fp-marquee');
+      }
     }
 
     function highlightCurrentTrack() {
