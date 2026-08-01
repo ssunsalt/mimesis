@@ -140,12 +140,6 @@ button{ font-family: inherit; }
   justify-content: center;
   padding: 8px 12px;
 }
-.dday-widget::before{
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to left, rgba(0,0,0,0.75), rgba(0,0,0,0) 70%);
-}
 .dday-text{
   position: relative;
   z-index: 1;

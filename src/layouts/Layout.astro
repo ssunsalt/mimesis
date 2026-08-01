@@ -111,7 +111,7 @@ const { title = "Mimesis" } = Astro.props;
     const toggle = document.getElementById("navToggle");
     const nav = document.getElementById("sidebarNav");
 
-    if (localStorage.getItem("navOpen") === "true") {
+    if (localStorage.getItem("navOpen") !== "false") {
       nav.classList.add("is-open");
       toggle.setAttribute("aria-expanded", "true");
     }
@@ -439,6 +439,12 @@ const { title = "Mimesis" } = Astro.props;
     // ============================================================
     // 클리커 스티커: 드래그로 이동, 클릭하면 짜부라지며 소리
     // ============================================================
+    var zCounter = 999998;
+    function bringToFront(el) {
+      zCounter += 1;
+      el.style.zIndex = zCounter;
+    }
+
     function playClickSound(weight) {
       try {
         var AC = window.AudioContext || window.webkitAudioContext;
@@ -446,7 +452,7 @@ const { title = "Mimesis" } = Astro.props;
         var now = ctx.currentTime;
         var isHeavy = weight === 'heavy';
         var freq = isHeavy ? 650 : 1500;
-        var gainPeak = isHeavy ? 0.28 : 0.2;
+        var gainPeak = isHeavy ? 0.23 : 0.2;
         var duration = isHeavy ? 0.09 : 0.045;
 
         var o = ctx.createOscillator();
@@ -466,7 +472,7 @@ const { title = "Mimesis" } = Astro.props;
           var g2 = ctx.createGain();
           o2.type = 'sine';
           o2.frequency.setValueAtTime(150, now);
-          g2.gain.setValueAtTime(0.2, now);
+          g2.gain.setValueAtTime(0.16, now);
           g2.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
           o2.connect(g2);
           g2.connect(ctx.destination);
@@ -512,6 +518,7 @@ const { title = "Mimesis" } = Astro.props;
       }
 
       restorePosition();
+      bringToFront(el);
 
       var dragging = false, moved = false, offsetX = 0, offsetY = 0, startX = 0, startY = 0;
 
@@ -523,6 +530,7 @@ const { title = "Mimesis" } = Astro.props;
         startY = clientY;
         dragging = true;
         moved = false;
+        bringToFront(el);
         el.classList.add('is-pressed');
       }
       function onMove(clientX, clientY) {
@@ -565,8 +573,8 @@ const { title = "Mimesis" } = Astro.props;
       });
     }
 
-    initClicker('clicker1', 'clickerPos1', 90, 90, 'heavy');
-    initClicker('clicker2', 'clickerPos2', 230, 90, 'light');
+    initClicker('clicker1', 'clickerPos1', 128, 70, 'heavy');
+    initClicker('clicker2', 'clickerPos2', 50, 70, 'light');
   })();
   </script>
 </body>
