@@ -1,4 +1,4 @@
-import { getPageBlocks } from "./notion.js";
+import { getPageBlocks, cacheImage } from "./notion.js";
 
 export async function renderBlocks(blocks) {
   const parts = await Promise.all(blocks.map(renderBlock));
@@ -18,20 +18,19 @@ async function renderBlock(block) {
       return `<h3>${renderRichText(block.heading_3.rich_text)}</h3>`;
 
     case "image": {
-      const url = block.image.file?.url ?? block.image.external?.url;
+      const rawUrl = block.image.file?.url ?? block.image.external?.url;
+      const url = await cacheImage(rawUrl);
+
       const captionRaw = (block.image.caption ?? [])
         .map((t) => t.plain_text)
         .join("");
 
       // 캡션 맨 앞에 [숫자]가 있으면 그 픽셀 값으로 폭을 제한함
-      // 예: 캡션에 "[400] 여기부터 진짜 캡션" -> 400px 폭 + "여기부터 진짜 캡션"만 캡션으로 표시
       const match = captionRaw.match(/^\[(\d{1,4})\]\s*/);
       const width = match ? match[1] : null;
       const caption = match ? captionRaw.slice(match[0].length) : captionRaw;
 
-      const figureStyle = width
-        ? ` style="max-width:${width}px;"`
-        : "";
+      const figureStyle = width ? ` style="max-width:${width}px;"` : "";
       const imgStyle = width ? ` style="width:100%;"` : "";
       const captionHtml = caption
         ? `<figcaption>${escapeHtml(caption)}</figcaption>`
@@ -42,7 +41,6 @@ async function renderBlock(block) {
 
     case "code": {
       const codeText = block.code.rich_text.map((t) => t.plain_text).join("");
-      // 언어가 html이면 마크업 그대로 삽입 (게임 로그 백업용), 아니면 코드로 표시
       if (block.code.language === "html") {
         return codeText;
       }
@@ -55,7 +53,6 @@ async function renderBlock(block) {
     case "divider":
       return `<hr />`;
 
-    // Notion에서 블록을 나란히 배치하면 생기는 "컬럼 그룹"
     case "column_list": {
       const columns = await getPageBlocks(block.id);
       const columnsHtml = await Promise.all(
@@ -68,7 +65,6 @@ async function renderBlock(block) {
       return `<div class="notion-column-list">${columnsHtml.join("")}</div>`;
     }
 
-    // column_list 없이 단독으로 올 일은 없지만 방어적으로 처리
     case "column": {
       const children = await getPageBlocks(block.id);
       const inner = await renderBlocks(children);
