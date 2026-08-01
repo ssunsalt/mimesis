@@ -2,7 +2,7 @@
 import "../styles/global.css";
 import { ClientRouter } from "astro:transitions";
 
-const { title = "Mimesis" } = Astro.props;
+const { title = "Mimesis", wide = false } = Astro.props;
 ---
 <!DOCTYPE html>
 <html lang="ko">
@@ -34,7 +34,7 @@ const { title = "Mimesis" } = Astro.props;
         </a>
       </div>
 
-      <div class="content-wrap">
+      <div class={wide ? "content-wrap content-wrap-wide" : "content-wrap"}>
         <slot />
       </div>
     </main>

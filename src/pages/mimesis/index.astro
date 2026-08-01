@@ -1,28 +1,38 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 
-// 캐릭터 정보 - 여기 텍스트를 직접 수정하시면 돼요 (Notion과 무관한 정적 페이지입니다)
-const characters = [
+// 캐릭터 정보 - 여기 텍스트/색상을 직접 수정하시면 돼요
+const charactersInfo = [
   {
-    name: "메티스",
-    image: "/images/metis.png",
-    desc: "수정중",
+    iconColor: "#b2b98b",
+    nameKr: "메티스",
+    nameEn: "Metis",
+    stats: "직업 | 성별 | 나이 | 키 | 몸무게",
   },
   {
-    name: "미리엘",
-    image: "/images/myriel.png",
-    desc: "수정중",
+    iconColor: "#8b8db9",
+    nameKr: "미리엘",
+    nameEn: "Myriel",
+    stats: "직업 | 성별 | 나이 | 키 | 몸무게",
   },
 ];
 ---
-<Layout title="MIMESIS">
-  <div class="character-list">
-    {characters.map((c) => (
-      <div class="character-card">
-        <img src={c.image} alt={c.name} />
-        <h2 class="character-name">{c.name}</h2>
-        <p class="character-desc">{c.desc}</p>
-      </div>
-    ))}
+<Layout title="MIMESIS" wide={true}>
+  <div class="character-hero">
+    <img src="/images/character.png" alt="캐릭터" class="character-hero-img" />
+
+    <div class="character-info character-info-left">
+      <span class="character-icon" style={`color:${charactersInfo[0].iconColor};`}>✸</span>
+      <p class="character-name-kr">{charactersInfo[0].nameKr}</p>
+      <p class="character-name-en">{charactersInfo[0].nameEn}</p>
+      <div class="character-stats">{charactersInfo[0].stats}</div>
+    </div>
+
+    <div class="character-info character-info-right">
+      <span class="character-icon" style={`color:${charactersInfo[1].iconColor};`}>✸</span>
+      <p class="character-name-kr">{charactersInfo[1].nameKr}</p>
+      <p class="character-name-en">{charactersInfo[1].nameEn}</p>
+      <div class="character-stats">{charactersInfo[1].stats}</div>
+    </div>
   </div>
 </Layout>

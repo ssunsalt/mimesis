@@ -6,6 +6,16 @@
   font-display: swap;
 }
 
+/* Google Fonts(fonts.googleapis.com) 대신 jsdelivr로 불러옴 - 광고차단/프라이버시 확장에 덜 막힘 */
+@font-face{
+  font-family: 'UnifrakturMaguntia';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('https://cdn.jsdelivr.net/fontsource/fonts/unifrakturmaguntia@latest/latin-400-normal.woff2') format('woff2'),
+       url('https://cdn.jsdelivr.net/fontsource/fonts/unifrakturmaguntia@latest/latin-400-normal.woff') format('woff');
+}
+
 :root{
   --accent: #c9c9c9;
   --bg: #1c1c1c;
@@ -403,6 +413,9 @@ button{ font-family: inherit; }
   margin: 0 auto;
   margin-top: 40px; /* 이 숫자로 로고-본문 사이 간격 조절 */
 }
+.content-wrap-wide{
+  max-width: 100%;
+}
 
 .post-list{
   list-style: none;
@@ -574,4 +587,91 @@ button{ font-family: inherit; }
 }
 .clicker-sticker.is-pressed{
   transform: scaleY(0.82) scaleX(1.06);
+}
+
+/* ---------- MIMESIS: 캐릭터 히어로 (스탠딩 이미지 + 좌우 정보) ---------- */
+.character-hero{
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end; /* 이미지를 하단에 딱 붙임 */
+  min-height: 80vh;
+  overflow: hidden;
+  margin-bottom: -80px; /* main-content의 공통 하단 여백(80px)을 상쇄 */
+}
+.character-hero-img{
+  display: block;
+  max-height: 100%;
+  height: 80vh;
+  width: auto;
+  max-width: 92%;
+  margin: 0; /* 하단 여백 없음 */
+  animation: characterFadeUp 0.6s ease both;
+}
+
+.character-info{
+  position: absolute;
+  bottom: 150px; /* ← 이 숫자로 정보 칸의 상하 위치 조절 (커질수록 위로 올라감) */
+  width: max-content;
+  max-width: 46%;
+  padding: 0 32px; /* 좌우 여백. 양쪽 동일해서 대칭 유지됨 */
+}
+.character-info-left{ left: 0; text-align: left; }
+.character-info-right{ right: 0; text-align: right; }
+
+.character-info > *{
+  opacity: 0;
+  animation: characterFadeUp 0.5s ease both;
+}
+.character-info .character-icon{ animation-delay: 0.45s; }
+.character-info .character-name-kr{ animation-delay: 0.55s; }
+.character-info .character-name-en{ animation-delay: 0.65s; }
+.character-info .character-stats{ animation-delay: 0.75s; }
+
+.character-icon{
+  display: block;
+  font-size: 20px;
+  margin: 0 0 6px;
+}
+.character-name-kr{
+  font-size: 20px;
+  line-height: 1.15;
+  color: var(--text-sub);
+  margin: 0 0 2px;
+  font-family: 'UnifrakturMaguntia', 'SandollJebi', sans-serif;
+  white-space: nowrap;
+}
+.character-name-en{
+  font-size: 48px;
+  line-height: 1.1;
+  font-weight: 400; /* 볼드 없음 */
+  font-family: 'UnifrakturMaguntia', 'SandollJebi', sans-serif;
+  color: var(--text);
+  margin: 0 0 10px;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+.character-stats{
+  display: inline-block;
+  background: #c9c9c9;
+  color: #3a3a3a;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 2px 8px; /* 박스 내부 여백 최소화 */
+  border-radius: 0;
+  line-height: 1.2;
+  white-space: nowrap;
+  position: relative;
+  z-index: 2;
+}
+
+@keyframes characterFadeUp{
+  from{ opacity: 0; transform: translateY(18px); }
+  to{ opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 860px){
+  .character-hero{ min-height: 60vh; flex-direction: column; align-items: center; padding-bottom: 200px; }
+  .character-hero-img{ height: 55vh; }
+  .character-info{ position: static; width: auto; padding: 12px 20px; text-align: center !important; }
 }
