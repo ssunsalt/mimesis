@@ -36,6 +36,8 @@ body{
   font-size: 13px;
   line-height: 1.75;
   -webkit-font-smoothing: antialiased;
+  /* 컴팩트한 회색 커스텀 커서 (이미지 파일 없이 SVG로 직접 그림) */
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Cpath d='M2 2 L2 16 L6 12.5 L8.5 18 L11 17 L8.5 11.5 L14 11.5 Z' fill='%23b5b5b5' stroke='%232a2a2a' stroke-width='1'/%3E%3C/svg%3E") 2 2, auto;
 }
 
 a{ color: inherit; text-decoration: none; }
@@ -95,7 +97,6 @@ button{ font-family: inherit; }
   color: var(--text-sub);
   font-size: 15px;
   line-height: 1;
-  cursor: pointer;
   transition: color 0.25s ease, transform 0.35s ease;
 }
 .nav-toggle:hover{ color: var(--text); }
@@ -236,7 +237,6 @@ button{ font-family: inherit; }
   height: 3px;
   background: rgba(255,255,255,0.12);
   border-radius: 2px;
-  cursor: pointer;
   position: relative;
 }
 .fp-progress-fill{
@@ -259,7 +259,6 @@ button{ font-family: inherit; }
   background: transparent;
   border: none;
   color: var(--text-sub);
-  cursor: pointer;
   padding: 4px;
   display: flex;
   align-items: center;
@@ -284,7 +283,6 @@ button{ font-family: inherit; }
   height: 1px;
   background: rgba(255,255,255,0.15);
   border-radius: 1px;
-  cursor: pointer;
 }
 .fp-volume-row input[type="range"]::-webkit-slider-thumb{
   -webkit-appearance: none;
@@ -322,7 +320,6 @@ button{ font-family: inherit; }
   background: none;
   border: none;
   color: var(--text-sub);
-  cursor: pointer;
   padding: 3px;
   transition: color 0.2s ease;
 }
@@ -357,7 +354,6 @@ button{ font-family: inherit; }
   color: var(--text-sub);
   font-size: 11px;
   padding: 6px 6px;
-  cursor: pointer;
   transition: color 0.15s ease, background 0.15s ease;
   border-radius: 4px;
   overflow: hidden;
@@ -570,14 +566,16 @@ button{ font-family: inherit; }
   width: 128px;
   height: 128px;
   z-index: 999998;
-  cursor: grab;
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='8' fill='none' stroke='%23b5b5b5' stroke-width='2'/%3E%3Ccircle cx='12' cy='12' r='8' fill='none' stroke='%232a2a2a' stroke-width='0.5'/%3E%3C/svg%3E") 12 12, grab;
   touch-action: none;
   user-select: none;
   transform-origin: bottom center;
   filter: drop-shadow(0 10px 10px rgba(0,0,0,0.4));
   transition: transform 0.14s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
-.clicker-sticker:active{ cursor: grabbing; }
+.clicker-sticker:active{
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='5' fill='%23b5b5b5' stroke='%232a2a2a' stroke-width='1'/%3E%3C/svg%3E") 12 12, grabbing;
+}
 .clicker-sticker img{
   width: 100%;
   height: 100%;
@@ -601,10 +599,10 @@ button{ font-family: inherit; }
 }
 .character-hero-img{
   display: block;
-  max-height: 100%;
-  height: 80vh;
-  width: auto;
+  max-height: 80vh;
   max-width: 92%;
+  width: auto;
+  height: auto;
   margin: 0; /* 하단 여백 없음 */
   animation: characterFadeUp 0.6s ease both;
 }
@@ -674,4 +672,61 @@ button{ font-family: inherit; }
   .character-hero{ min-height: 60vh; flex-direction: column; align-items: center; padding-bottom: 200px; }
   .character-hero-img{ height: 55vh; }
   .character-info{ position: static; width: auto; padding: 12px 20px; text-align: center !important; }
+}
+
+/* ---------- 갤러리 이미지 확대 뷰어 (라이트박스) ---------- */
+.cat-GALLERY .post-full-body img{
+  cursor: zoom-in;
+}
+.lightbox-overlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.88);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+.lightbox-overlay.is-open{
+  opacity: 1;
+  pointer-events: auto;
+}
+.lightbox-overlay img{
+  max-width: 92vw;
+  max-height: 92vh;
+  cursor: zoom-out;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+}
+
+/* ---------- Notion 이미지 (캡션으로 크기 조절 가능) ---------- */
+.notion-image{
+  margin: 16px auto;
+}
+.notion-image img{
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  height: auto;
+}
+.notion-image figcaption{
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-sub);
+  margin-top: 4px;
+}
+
+/* ---------- 커서 통일 세트: 포인터 / 텍스트 ---------- */
+
+/* 링크, 버튼 등 클릭 가능한 요소 - 작은 점 모양 */
+a, button, .fp-progress-track, .fp-volume-row input[type="range"]{
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14'%3E%3Ccircle cx='7' cy='7' r='4' fill='%23b5b5b5' stroke='%232a2a2a' stroke-width='1'/%3E%3C/svg%3E") 7 7, pointer;
+}
+
+/* 본문 텍스트 영역 - 얇은 I자 모양 */
+p, li, .post-full-body, .post-title, .character-desc,
+.fp-track-name, .fp-display-text, .dday-text{
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='20' viewBox='0 0 12 20'%3E%3Cpath d='M2 2 H10 M6 2 V18 M2 18 H10' stroke='%23b5b5b5' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3Cpath d='M2 2 H10 M6 2 V18 M2 18 H10' stroke='%232a2a2a' stroke-width='0.5' fill='none'/%3E%3C/svg%3E") 6 10, text;
 }

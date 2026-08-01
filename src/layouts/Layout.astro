@@ -104,6 +104,11 @@ const { title = "Mimesis", wide = false } = Astro.props;
     <img src="/images/Clicker2.png" alt="클리커2" draggable="false" />
   </div>
 
+  <!-- 갤러리 이미지 확대 뷰어 -->
+  <div class="lightbox-overlay" id="lightboxOverlay" transition:persist>
+    <img id="lightboxImg" src="" alt="" />
+  </div>
+
   <script>
     // ------------------------------------------------------------
     // 사이드 메뉴 (열림/닫힘 상태 유지 + 클릭시에만 애니메이션)
@@ -606,6 +611,48 @@ const { title = "Mimesis", wide = false } = Astro.props;
 
     initClicker('clicker1', 'clickerPos1', 128, 70, 'heavy');
     initClicker('clicker2', 'clickerPos2', 50, 70, 'light');
+  })();
+  </script>
+
+  <script>
+  (function () {
+    // ============================================================
+    // 이미지 우클릭 방지 (관리자는 예외)
+    // 관리자 모드 켜기: 아무 주소 끝에 ?admin=on 붙여서 한 번 방문
+    // 끄기: ?admin=off
+    // ============================================================
+    if (location.search.indexOf('admin=on') !== -1) {
+      localStorage.setItem('adminMode', 'true');
+    }
+    if (location.search.indexOf('admin=off') !== -1) {
+      localStorage.removeItem('adminMode');
+    }
+
+    document.addEventListener('contextmenu', function (e) {
+      var isAdmin = localStorage.getItem('adminMode') === 'true';
+      if (!isAdmin && e.target.tagName === 'IMG') {
+        e.preventDefault();
+      }
+    });
+
+    // ============================================================
+    // 갤러리 전용 이미지 확대 뷰어 (라이트박스)
+    // .cat-GALLERY 안의 이미지에만 적용됨
+    // ============================================================
+    var overlay = document.getElementById('lightboxOverlay');
+    var overlayImg = document.getElementById('lightboxImg');
+
+    document.addEventListener('click', function (e) {
+      var img = e.target.closest('.cat-GALLERY .post-full-body img');
+      if (!img) return;
+      overlayImg.src = img.src;
+      overlayImg.alt = img.alt || '';
+      overlay.classList.add('is-open');
+    });
+
+    overlay.addEventListener('click', function () {
+      overlay.classList.remove('is-open');
+    });
   })();
   </script>
 </body>

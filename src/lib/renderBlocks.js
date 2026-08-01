@@ -19,7 +19,25 @@ async function renderBlock(block) {
 
     case "image": {
       const url = block.image.file?.url ?? block.image.external?.url;
-      return `<img src="${url}" alt="" />`;
+      const captionRaw = (block.image.caption ?? [])
+        .map((t) => t.plain_text)
+        .join("");
+
+      // 캡션 맨 앞에 [숫자]가 있으면 그 픽셀 값으로 폭을 제한함
+      // 예: 캡션에 "[400] 여기부터 진짜 캡션" -> 400px 폭 + "여기부터 진짜 캡션"만 캡션으로 표시
+      const match = captionRaw.match(/^\[(\d{1,4})\]\s*/);
+      const width = match ? match[1] : null;
+      const caption = match ? captionRaw.slice(match[0].length) : captionRaw;
+
+      const figureStyle = width
+        ? ` style="max-width:${width}px;"`
+        : "";
+      const imgStyle = width ? ` style="width:100%;"` : "";
+      const captionHtml = caption
+        ? `<figcaption>${escapeHtml(caption)}</figcaption>`
+        : "";
+
+      return `<figure class="notion-image"${figureStyle}><img src="${url}" alt=""${imgStyle} />${captionHtml}</figure>`;
     }
 
     case "code": {
