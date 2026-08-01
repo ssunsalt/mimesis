@@ -5,7 +5,12 @@ import path from "node:path";
 const notion = new Client({ auth: import.meta.env.NOTION_TOKEN });
 const databaseId = import.meta.env.NOTION_DATABASE_ID;
 
-const CACHE_DIR = path.join(process.cwd(), "public", "notion-images");
+// 로컬 개발(npm run dev) 중엔 public에, 실제 배포 빌드(npm run build) 때는
+// Astro가 결과물을 다 만든 뒤 public을 복사하는 타이밍 문제를 피하기 위해
+// 최종 결과물 폴더(dist)에 직접 저장함
+const CACHE_DIR = import.meta.env.DEV
+  ? path.join(process.cwd(), "public", "notion-images")
+  : path.join(process.cwd(), "dist", "notion-images");
 
 // Notion 이미지 URL은 1시간 정도만 유효한 임시 링크라, 빌드할 때
 // 파일을 실제로 다운로드해서 우리 사이트 자체 폴더에 영구 저장해둠.
