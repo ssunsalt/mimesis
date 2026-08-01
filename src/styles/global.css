@@ -726,7 +726,67 @@ a, button, .fp-progress-track, .fp-volume-row input[type="range"]{
 }
 
 /* 본문 텍스트 영역 - 얇은 I자 모양 */
-p, li, .post-full-body, .post-title, .character-desc,
+p, li, .post-full-body, .character-desc,
 .fp-track-name, .fp-display-text, .dday-text{
   cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='20' viewBox='0 0 12 20'%3E%3Cpath d='M2 2 H10 M6 2 V18 M2 18 H10' stroke='%23b5b5b5' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3Cpath d='M2 2 H10 M6 2 V18 M2 18 H10' stroke='%232a2a2a' stroke-width='0.5' fill='none'/%3E%3C/svg%3E") 6 10, text;
 }
+
+
+/* ---------- 로그인 페이지 ---------- */
+.login-page{
+  max-width: 320px;
+  margin: 80px auto;
+  text-align: center;
+}
+.login-title{
+  font-size: 18px;
+  font-weight: 400;
+  margin: 0 0 8px;
+}
+.login-desc{
+  font-size: 12px;
+  color: var(--text-sub);
+  margin: 0 0 24px;
+}
+.login-error{
+  font-size: 11px;
+  color: #d98080;
+  margin: 0 0 16px;
+}
+.login-form{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.login-form input{
+  background: var(--bg-sub);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  outline: none;
+}
+.login-form input:focus{
+  border-color: var(--accent);
+}
+.login-submit{
+  background: var(--accent);
+  color: #1c1c1c;
+  border: none;
+  font-family: inherit;
+  font-size: 13px;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  margin-top: 6px;
+  transition: opacity 0.15s ease;
+}
+.login-submit:hover{ opacity: 0.85; }
+.login-cancel{
+  display: inline-block;
+  margin-top: 24px;
+  font-size: 11px;
+  color: var(--text-sub);
+}
+.login-cancel:hover{ color: var(--text); }

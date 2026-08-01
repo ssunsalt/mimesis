@@ -1,0 +1,37 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const redirect = Astro.url.searchParams.get("redirect") || "/";
+const hasError = Astro.url.searchParams.get("error") === "1";
+---
+<Layout title="로그인">
+  <div class="login-page">
+    <h1 class="login-title">비공개 페이지</h1>
+    <p class="login-desc">아이디와 비밀번호를 입력해주세요.</p>
+
+    {hasError && (
+      <p class="login-error">아이디 또는 비밀번호가 올바르지 않습니다.</p>
+    )}
+
+    <form class="login-form" method="POST" action="/api/login" data-astro-reload>
+      <input type="hidden" name="redirect" value={redirect} />
+      <input
+        type="text"
+        name="username"
+        placeholder="아이디"
+        autocomplete="username"
+        required
+      />
+      <input
+        type="password"
+        name="password"
+        placeholder="비밀번호"
+        autocomplete="current-password"
+        required
+      />
+      <button type="submit" class="login-submit">입장하기</button>
+    </form>
+
+    <a href="/" class="login-cancel">← 메인으로 돌아가기</a>
+  </div>
+</Layout>
