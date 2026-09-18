@@ -17,5 +17,5 @@ export default async (request, context) => {
 
 // 이 경로들에서만 작동, 메인(/)과 /gallery는 건드리지 않음
 export const config = {
-  path: ["/trpg", "/trpg/*", "/log", "/log/*"],
+  path: ["/trpg", "/trpg/*", "/log", "/log/*", "/sheet", "/sheet/*"],
 };

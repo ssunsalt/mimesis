@@ -15,6 +15,10 @@ const { post } = Astro.props;
 const embedUrl = getEmbedUrl(post.sheetUrl);
 ---
 <Layout title={post.title} wide={true}>
+  <header class="post-full-header">
+    <h1 class="post-full-title">{post.title}</h1>
+  </header>
+
   <div class="sheet-embed-wrap">
     {!embedUrl && (
       <p class="empty-msg">시트 링크를 확인해주세요.</p>

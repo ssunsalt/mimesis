@@ -793,3 +793,22 @@ p, li, .post-full-body, .character-desc,
   color: var(--text-sub);
 }
 .login-cancel:hover{ color: var(--text); }
+
+
+/* ---------- 구글 시트 임베드 (원본 그대로) ---------- */
+.sheet-embed-wrap{
+  background: #2c2c2c; /* 밝은 배경 - 시트 자체가 흰 배경이라 자연스럽게 어울림 */
+  border-radius: var(--radius);
+  padding: 10px;
+  overflow: hidden;
+  margin-top: -30px; /* content-wrap의 기본 상단 여백(40px)을 상쇄해서 위로 당김.
+                         더 위로 붙이고 싶으면 이 숫자를 더 키우면 됨(최대 -40px) */
+}
+.sheet-embed-frame{
+  width: 100%;
+  height: 88vh;
+  border: none;
+  display: block;
+  background: #2c2c2c;
+  border-radius: 4px;
+}

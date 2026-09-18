@@ -81,6 +81,7 @@ export async function getPosts(category) {
         title: page.properties["제목"]?.title?.[0]?.plain_text ?? "제목 없음",
         date: page.properties["날짜"]?.date?.start ?? "",
         thumbnail: rawThumb ? await cacheImage(rawThumb) : null,
+        sheetUrl: page.properties["시트링크"]?.url ?? null,
       };
     })
   );
