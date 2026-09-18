@@ -790,17 +790,24 @@ p, li, .post-full-body, .character-desc,
 .sheet-embed-wrap{
   background: #2c2c2c; /* 밝은 배경 - 시트 자체가 흰 배경이라 자연스럽게 어울림 */
   border-radius: var(--radius);
-  padding: 10px;
+  padding: 5px;
   overflow: hidden;
   margin-top: -30px; /* content-wrap의 기본 상단 여백(40px)을 상쇄해서 위로 당김.
                          더 위로 붙이고 싶으면 이 숫자를 더 키우면 됨(최대 -40px) */
 }
-.sheet-embed-frame{
+.sheet-embed-scale{
   width: 100%;
-  height: 88vh;
+  height: 88vh;   /* 최종적으로 화면에서 차지할 크기 - 원하는 만큼 조절 */
+  overflow: hidden;
+}
+.sheet-embed-frame{
+  width: 125%;              /* 100 ÷ 배율(0.8) */
+  height: 110vh;            /* 88vh ÷ 배율(0.8) */
+  transform: scale(0.9);    /* 이 숫자가 실제 배율 */
+  transform-origin: top left;
   border: none;
   display: block;
-  background: #2c2c2c;
+  background: #ffffff;
   border-radius: 4px;
 }
 
