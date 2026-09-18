@@ -4,7 +4,7 @@ import { getPosts } from "../../lib/notion.js";
 
 const posts = await getPosts("SHEET");
 ---
-<Layout title="SHEET">
+<Layout title="SHEET" dim={true}>
   {posts.length === 0 && <p class="empty-msg">등록된 시트가 없습니다.</p>}
   <ul class="post-list">
     {posts.map((post) => (

@@ -23,7 +23,8 @@
   --text: #e8e8e6;
   --text-sub: #8f8f8c;
   --radius: 8px;
-  --sidebar-width: 220px;
+  --sidebar-width: 280px;
+  --sidebar-width-left: 280px;
 }
 
 *{ box-sizing: border-box; }
@@ -62,9 +63,9 @@ button{ font-family: inherit; }
 }
 
 .sidebar{
-  width: var(--sidebar-width);
+  width: var(--sidebar-width-left);
   flex-shrink: 0;
-  padding: 150px 24px 40px;
+  padding: 60px 24px 40px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -173,7 +174,7 @@ button{ font-family: inherit; }
   font-family: 'SandollJebi', -apple-system, BlinkMacSystemFont, sans-serif;
   background: var(--bg-sub);
   border-radius: var(--radius);
-  padding: 12px 12px 10px;
+  padding: 8px 20px 10px;
   color: var(--text);
   user-select: none;
   opacity: 0.9;
@@ -196,7 +197,7 @@ button{ font-family: inherit; }
 .fp-cover img:not([src]), .fp-cover img[src=""]{ display: none; }
 
 .fp-track-name-wrap{
-  margin-top: 6px;
+  margin-top: 4px;
   overflow: hidden;
   white-space: nowrap;
   text-align: center;
@@ -220,7 +221,7 @@ button{ font-family: inherit; }
 }
 
 .fp-progress-row{
-  margin-top: 8px;
+  margin-top: 6px;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -249,7 +250,7 @@ button{ font-family: inherit; }
 }
 
 .fp-controls{
-  margin-top: 6px;
+  margin-top: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -273,7 +274,7 @@ button{ font-family: inherit; }
 /* 음량 슬라이더: 아이콘 없이 얇은 라인 형태. 좌우 여백 0으로 통일해서
    위의 진행바(.fp-progress-track)·표지 이미지 등과 정확히 같은 폭으로 맞춤 */
 .fp-volume-row{
-  margin-top: 6px;
+  margin-top: 0px;
   padding: 0;
 }
 .fp-volume-row input[type="range"]{
@@ -316,7 +317,7 @@ button{ font-family: inherit; }
   align-items: center;
   justify-content: center;
   width: 100%;
-  margin-top: 4px;
+  margin-top: 2px;
   background: none;
   border: none;
   color: var(--text-sub);
@@ -380,34 +381,19 @@ button{ font-family: inherit; }
   top: -1px;
 }
 
-/* ---------- 중앙 상단 고정 로고 ---------- */
-.top-logo{
-  position: sticky;
-  top: 0;
-  z-index: 5;
-  background: transparent;
-  display: flex;
-  justify-content: center;
-  padding: 45px 0;
-}
-.top-logo-link img{
-  width: 280px; /* 로고 크기는 이 숫자로 조절 */
-  display: block;
-  transition: opacity 0.2s ease;
-}
-.top-logo-link:hover img{ opacity: 0.85; }
 
 /* ---------- 중앙 콘텐츠 영역 ---------- */
 .main-content{
   flex: 1;
   min-width: 0;
   padding: 0px 24px 80px;
+  position: relative;
 }
 
 .content-wrap{
   max-width: 680px;
   margin: 0 auto;
-  margin-top: 40px; /* 이 숫자로 로고-본문 사이 간격 조절 */
+  margin-top: 150px; /* 이 숫자로 로고-본문 사이 간격 조절 */
 }
 .content-wrap-wide{
   max-width: 100%;
@@ -418,13 +404,17 @@ button{ font-family: inherit; }
   margin: 0;
   padding: 0;
 }
-.post-item{ margin-bottom: 4px; }
+.post-item{
+  margin-bottom: 4px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);  /* 흐린 구분선 추가 */
+}
+.post-item:last-child{ border-bottom: none; }
 .post-link{
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 16px;
-  padding: 14px 0;
+  padding: 9px 0;
   transition: transform 0.2s ease;
 }
 .post-link:hover{ transform: translateX(2px); }
@@ -512,7 +502,7 @@ button{ font-family: inherit; }
   line-height: 1.8;
 }
 
-@media (max-width: 1100px){
+@media (max-width: 860px){
   .sidebar-right{ display: none; }
 }
 
@@ -595,11 +585,12 @@ button{ font-family: inherit; }
   align-items: flex-end; /* 이미지를 하단에 딱 붙임 */
   min-height: 80vh;
   overflow: hidden;
+  margin-top: 170px;
   margin-bottom: -80px; /* main-content의 공통 하단 여백(80px)을 상쇄 */
 }
 .character-hero-img{
   display: block;
-  max-height: 80vh;
+  max-height: 95vh;
   max-width: 92%;
   width: auto;
   height: auto;
@@ -609,7 +600,7 @@ button{ font-family: inherit; }
 
 .character-info{
   position: absolute;
-  bottom: 150px; /* ← 이 숫자로 정보 칸의 상하 위치 조절 (커질수록 위로 올라감) */
+  bottom: 200px; /* ← 이 숫자로 정보 칸의 상하 위치 조절 (커질수록 위로 올라감) */
   width: max-content;
   max-width: 46%;
   padding: 0 32px; /* 좌우 여백. 양쪽 동일해서 대칭 유지됨 */
@@ -669,7 +660,7 @@ button{ font-family: inherit; }
 }
 
 @media (max-width: 860px){
-  .character-hero{ min-height: 60vh; flex-direction: column; align-items: center; padding-bottom: 200px; }
+  .character-hero{ min-height: 95vh; flex-direction: column; align-items: center; padding-bottom: 200px; }
   .character-hero-img{ height: 55vh; }
   .character-info{ position: static; width: auto; padding: 12px 20px; text-align: center !important; }
 }
@@ -811,4 +802,76 @@ p, li, .post-full-body, .character-desc,
   display: block;
   background: #2c2c2c;
   border-radius: 4px;
+}
+
+
+@media (max-width: 860px){
+  .mobile-logo{
+    display: block;
+  }
+  .mobile-logo img{ width: 100px; display: block; }
+}
+
+/* 어둡게 깔아주는 오버레이 (목차 페이지 전용) */
+.page-dim-overlay{
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 800px;   /* 이 숫자로 가로 폭 조절 */
+  background: rgba(0,0,0,0.5);
+  pointer-events: none;
+}
+
+/* 왼쪽 사이드바 로고 */
+.sidebar-logo{
+  display: block;
+  margin-top: 10px;
+  margin-bottom: 30px;
+}
+.sidebar-logo img{
+  width: 100%;
+  display: block;
+  transition: opacity 0.2s ease;
+}
+.sidebar-logo:hover img{ opacity: 0.85; }
+
+/* 뒤로가기 버튼 */
+.back-to-list{
+  position: fixed;
+  left: 24px;
+  bottom: 24px;
+  color: var(--text-sub);
+  font-size: 16px;
+  z-index: 50;
+  transition: color 0.15s ease;
+}
+.back-to-list:hover{ color: var(--text); }
+
+/* ---------- MIMESIS: Origin/Modern 전환 버튼 ---------- */
+.profile-toggle{
+  position: fixed;
+  top: 100px;         /* 화면 맨 위에서부터의 거리 - 이 값으로 위치 조절 */
+  left: 0;
+  right: 0;
+  z-index: 3;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+.profile-toggle-btn{
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--text-sub);
+  padding: 4px 14px;
+  background: rgba(0,0,0,0.5);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.profile-toggle-btn:hover{ color: var(--text); }
+.profile-toggle-btn.is-active{
+  color: var(--accent);
+  border-color: var(--accent);
 }

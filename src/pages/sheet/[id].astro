@@ -14,7 +14,7 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 const embedUrl = getEmbedUrl(post.sheetUrl);
 ---
-<Layout title={post.title} wide={true}>
+<Layout title={post.title} wide={true} backLink="/sheet">
   <header class="post-full-header">
     <h1 class="post-full-title">{post.title}</h1>
   </header>

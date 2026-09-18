@@ -15,7 +15,7 @@ const { post } = Astro.props;
 const blocks = await getPageBlocks(post.id);
 const html = await renderBlocks(blocks);
 ---
-<Layout title={post.title}>
+<Layout title={post.title} backLink="/gallery">
   <article class="post-full cat-GALLERY">
     <div class="post-full-body" set:html={html} />
   </article>

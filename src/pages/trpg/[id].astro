@@ -1,10 +1,10 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import { getPosts } from "../../lib/notion.js";
-import { getEmbedUrl } from "../../lib/sheet.js";
+import { getPosts, getPageBlocks } from "../../lib/notion.js";
+import { renderBlocks } from "../../lib/renderBlocks.js";
 
 export async function getStaticPaths() {
-  const posts = await getPosts("SHEET");
+  const posts = await getPosts("TRPG");
   return posts.map((post) => ({
     params: { id: post.id },
     props: { post },
@@ -12,15 +12,17 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const embedUrl = getEmbedUrl(post.sheetUrl);
+const blocks = await getPageBlocks(post.id);
+const html = await renderBlocks(blocks);
 ---
-<Layout title={post.title} wide={true}>
-  <div class="sheet-embed-wrap">
-    {!embedUrl && (
-      <p class="empty-msg">시트 링크를 확인해주세요.</p>
-    )}
-    {embedUrl && (
-      <iframe src={embedUrl} class="sheet-embed-frame" loading="lazy"></iframe>
-    )}
-  </div>
+<Layout title={post.title} backLink="/trpg">
+  <article class="post-full">
+    <header class="post-full-header">
+      <h1 class="post-full-title">{post.title}</h1>
+      <div class="post-meta">
+        <span class="post-date">{post.date}</span>
+      </div>
+    </header>
+    <div class="post-full-body" set:html={html} />
+  </article>
 </Layout>

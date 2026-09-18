@@ -2,7 +2,7 @@
 import "../styles/global.css";
 import { ClientRouter } from "astro:transitions";
 
-const { title = "Mimesis", wide = false } = Astro.props;
+const { title = "Mimesis", wide = false, dim = false, backLink = null } = Astro.props;
 ---
 <!DOCTYPE html>
 <html lang="ko">
@@ -25,6 +25,10 @@ const { title = "Mimesis", wide = false } = Astro.props;
 <body>
   <div class="app-shell">
     <aside class="sidebar" transition:persist>
+      <a href="/" class="sidebar-logo">
+        <img src="/images/logo.png" alt="logo" />
+      </a>
+
       <button class="nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-label="메뉴 열기">
         ✸
       </button>
@@ -39,16 +43,14 @@ const { title = "Mimesis", wide = false } = Astro.props;
     </aside>
 
     <main class="main-content">
-      <div class="top-logo" transition:persist>
-        <a href="/" class="top-logo-link">
-          <img src="/images/logo.png" alt="logo" />
-        </a>
-      </div>
-
-      <div class={wide ? "content-wrap content-wrap-wide" : "content-wrap"}>
-        <slot />
-      </div>
-    </main>
+  {dim && <div class="page-dim-overlay"></div>}
+  {backLink && (
+    <a href={backLink} class="back-to-list" aria-label="목차로 돌아가기">◀</a>
+  )}
+  <div class={wide ? "content-wrap content-wrap-wide" : "content-wrap"}>
+    <slot />
+  </div>
+</main>
 
     <aside class="sidebar-right" transition:persist>
       <!-- D-day 위젯 -->
@@ -58,9 +60,6 @@ const { title = "Mimesis", wide = false } = Astro.props;
 
       <!-- 뮤직 플레이어 위젯 (고정형) -->
       <div id="fpPlayer" class="fp-container">
-        <div class="fp-cover">
-          <img id="fpCoverImg" src="" alt="" />
-        </div>
 
         <div class="fp-track-name-wrap"><span class="fp-track-name" id="fpTrackName">불러오는 중…</span></div>
 
@@ -168,9 +167,6 @@ const { title = "Mimesis", wide = false } = Astro.props;
     var COVER_IMAGE_URL = '/images/cover.png';
     var PLAYLIST_ID = 'PLOvyspt6w_RQ';
 
-    if (COVER_IMAGE_URL) {
-      document.getElementById('fpCoverImg').src = COVER_IMAGE_URL;
-    }
 
     // ============================================================
     // 유튜브 IFrame API

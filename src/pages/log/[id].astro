@@ -15,7 +15,7 @@ const { post } = Astro.props;
 const blocks = await getPageBlocks(post.id);
 const html = await renderBlocks(blocks);
 ---
-<Layout title={post.title}>
+<Layout title={post.title} backLink="/log">
   <article class="post-full">
     <header class="post-full-header">
       <h1 class="post-full-title">{post.title}</h1>
